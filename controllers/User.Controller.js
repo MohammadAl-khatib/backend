@@ -1,6 +1,6 @@
 "use strict";
 
-const {userModel} = require("../models/User.Model");
+const { userModel } = require("../models/User.Model");
 const axios = require("axios");
 
 const getData = async (req, res) => {
@@ -10,11 +10,33 @@ const getData = async (req, res) => {
   res.status(200).json(result.data);
 };
 
-const createUser = async (req, res) => {
-    let email = req.query.email;
-    let newUser = new userModel({ email: email, favs: [] });
-    newUser.save();
-    res.status(200).json(await userModel.find({}));
-  };
+const getFavs =async (req,res) => {
+res.status(200).json(await userModel.find({}))
+}
 
-module.exports = {getData,createUser};
+const createFavs = async (req, res) => {
+  let email = req.query.email
+  let fav = req.body;
+  let newUser = new userModel({ email: email, favs: fav });
+  newUser.save();
+  res.status(200).json(await userModel.find({}));
+};
+
+const updateFavs = async (req, res) => {
+  let id = req.params.id;
+  let updatedFav = req.body;
+
+  await userModel.findOne({ _id: id }).then(async (item) => {
+    item.favs = updatedFav;
+    await item.save();
+  });
+  res.status(200).json(await userModel.find({}));
+};
+
+const deleteFav = async (req,res) => {
+  let id = req.params.id;
+  await userModel.findByIdAndDelete(id)
+  res.status(200).json(await userModel.find({}))
+}
+
+module.exports = { getData, createFavs, updateFavs, deleteFav, getFavs };

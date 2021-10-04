@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
     email:String,
-    favs:Array
+    favs:Object
 });
 
 const userModel = new mongoose.model('user',userSchema);
